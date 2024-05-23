@@ -4,6 +4,10 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include "Eigen-3.3/Eigen/Core"
 #include "Eigen-3.3/Eigen/QR"
 #include "MPC.h"
@@ -72,6 +76,40 @@ int main(int argc, char *argv[]) {
   // MPC is initialized here!
   MPC mpc;
 
+  // <------INSERTED CODE----------
+  string file_path = "path.csv";
+    vector<double> x_, y_;
+
+    ifstream file(file_path);
+    if (file.is_open()) {
+        string line;
+        getline(file, line);
+
+        while (getline(file, line)) {
+            stringstream ss(line);
+            string x_str, y_str;
+            getline(ss, x_str, ' ');
+            getline(ss, y_str);
+
+            double x_value, y_value;
+            try {
+                x_value = stod(x_str);
+                y_value = stod(y_str);
+            } catch (const invalid_argument& e) {
+                cerr << "Invalid value in line: " << line << endl;
+                continue;
+            }
+
+            x_.push_back(x_value);
+            y_.push_back(y_value);
+        }
+
+        file.close();
+    }
+
+  // ------INSERTED CODE---------->
+
+  
   // default weights
   double cte_weight = 700.0;
   double epsi_weight = 500.0;
